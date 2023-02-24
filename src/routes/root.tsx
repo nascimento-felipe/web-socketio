@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../styles/global.css";
 
 function Root() {
@@ -24,9 +25,12 @@ function Root() {
             <option value="cpp">C++</option>
           </select>
         </div>
-        <button className="p-2 px-10 mt-6 rounded-lg bg-red-600 hover:bg-red-800 transition-colors">
+        <Link
+          to={"http://localhost:5173/chat"}
+          className="p-2 px-10 mt-6 rounded-lg bg-red-600 hover:bg-red-800 transition-colors"
+        >
           Join
-        </button>
+        </Link>
       </form>
     </div>
   );
