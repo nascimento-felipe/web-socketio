@@ -13,7 +13,6 @@ export default function Chat() {
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
 
   const minhaMsgStyle = "w-full flex justify-end mr-10";
-  const outroUserMsgStyle = "w-full flex justify-start ml-10";
 
   useState(() => {
     renderizarMensagens();
@@ -54,21 +53,35 @@ export default function Chat() {
       <div className="h-1/2 w-1/2 mt-10 outline decoration-solid flex flex-col items-center">
         <div className="font-bold text-lg">Ola username, esta eh a sala --</div>
         <hr className="w-1/2" />
-        {mensagens!.map((mensagem) => {
-          if (mensagem.nameUser === "Felipe") {
-            return (
-              <span className={minhaMsgStyle} key={mensagem.id}>
-                {mensagem.message}
-              </span>
-            );
-          } else {
-            return (
-              <span className={outroUserMsgStyle} key={mensagem.id}>
-                {mensagem.message}
-              </span>
-            );
-          }
-        })}
+        <div className="w-full flex flex-col mt-5">
+          {mensagens!.map((mensagem) => {
+            if (mensagem.nameUser === "Felipe") {
+              return (
+                <div
+                  className="w-fit px-5 ml-2 mb-2 flex flex-col justify-end rounded-lg bg-zinc-700"
+                  key={mensagem.id}
+                >
+                  <span className="text-sm text-sky-700">
+                    {mensagem.nameUser}
+                  </span>
+                  <span>{mensagem.message}</span>
+                </div>
+              );
+            } else {
+              return (
+                <div
+                  className="w-fit px-5 ml-2 mb-2 flex flex-col rounded-lg bg-zinc-700"
+                  key={mensagem.id}
+                >
+                  <span className="text-sm text-red-600">
+                    {mensagem.nameUser}
+                  </span>
+                  <span>{mensagem.message}</span>
+                </div>
+              );
+            }
+          })}
+        </div>
       </div>
     </div>
   );
