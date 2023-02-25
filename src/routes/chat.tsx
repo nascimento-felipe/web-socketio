@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { PaperPlaneRight } from "phosphor-react";
+import { useState } from "react";
 import { api } from "../lib/axios";
 
 interface Mensagem {
@@ -11,8 +12,10 @@ interface Mensagem {
 
 export default function Chat() {
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
+  const [mensagemAtual, setMensagemAtual] = useState("");
+  const [idCont, setIdCont] = useState(0);
 
-  const minhaMsgStyle = "w-full flex justify-end mr-10";
+  const username = "Felipe";
 
   useState(() => {
     renderizarMensagens();
@@ -47,6 +50,21 @@ export default function Chat() {
     return;
   }
 
+  function adicionarMensagem() {
+    const novaMensagem: Mensagem = {
+      createdAt: new Date(),
+      message: mensagemAtual,
+      nameUser: username,
+      id: idCont.toString(),
+      room_id: 1,
+    };
+
+    setIdCont(idCont + 1);
+
+    setMensagens([...mensagens, novaMensagem]);
+    setMensagemAtual("");
+  }
+
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center">
       <button className="bg-red-600 p-2 rounded-lg hover:">Get out</button>
@@ -58,7 +76,7 @@ export default function Chat() {
             if (mensagem.nameUser === "Felipe") {
               return (
                 <div
-                  className="w-fit px-5 ml-2 mb-2 flex flex-col justify-end rounded-lg bg-zinc-700"
+                  className="w-fit px-5 mb-2 flex flex-col justify-end rounded-lg bg-zinc-700 self-end mr-2"
                   key={mensagem.id}
                 >
                   <span className="text-sm text-sky-700">
@@ -82,6 +100,32 @@ export default function Chat() {
             }
           })}
         </div>
+      </div>
+      <div className=" flex flex-row justify-center items-center">
+        <input
+          type="text"
+          size={80}
+          className="p-2 mt-2 rounded-lg bg-zinc-600 outline-none text-sm"
+          placeholder="insira sua mensagem..."
+          onChange={(event) => setMensagemAtual(event.target.value)}
+          value={mensagemAtual}
+          onKeyDown={(key) => {
+            if (key.code === "Enter") {
+              adicionarMensagem();
+            }
+          }}
+        />
+        <button
+          className="p-1 mt-2 hover:bg-zinc-800 hover:rounded-lg transition-all"
+          onClick={adicionarMensagem}
+          onKeyDown={(key) => {
+            if (key.code === "Enter") {
+              adicionarMensagem();
+            }
+          }}
+        >
+          <PaperPlaneRight size={24} />
+        </button>
       </div>
     </div>
   );
