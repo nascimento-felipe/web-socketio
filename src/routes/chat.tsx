@@ -1,5 +1,6 @@
 import { PaperPlaneRight } from "phosphor-react";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { api } from "../lib/axios";
 
 interface Mensagem {
@@ -10,16 +11,40 @@ interface Mensagem {
   room_id: number;
 }
 
+interface ChatProps {
+  username: string;
+  roomId: number;
+}
+
 export default function Chat() {
+  const { state } = useLocation();
+
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
   const [mensagemAtual, setMensagemAtual] = useState("");
   const [idCont, setIdCont] = useState(0);
 
-  const username = "Felipe";
+  const username = state.username;
+  const roomId = state.roomId;
 
   useState(() => {
     renderizarMensagens();
   });
+
+  function sayRoom(id: number) {
+    switch (id) {
+      case 1:
+        return "Node";
+      case 2:
+        return "Java";
+      case 3:
+        return "C#";
+      case 4:
+        return "C++";
+      default:
+        return "--";
+    }
+  }
+
   // essa funcao vai ser usada mais tarde por criar as mensagens dentro do site
   function renderizarMensagens() {
     try {
@@ -67,9 +92,13 @@ export default function Chat() {
 
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center">
-      <button className="bg-red-600 p-2 rounded-lg hover:">Get out</button>
+      <Link to={"/"} className="bg-red-600 p-2 rounded-lg">
+        Get out
+      </Link>
       <div className="h-1/2 w-1/2 mt-10 outline decoration-solid flex flex-col items-center">
-        <div className="font-bold text-lg">Ola username, esta eh a sala --</div>
+        <div className="font-bold text-lg">
+          Ola {username}, esta eh a sala {sayRoom(roomId)}
+        </div>
         <hr className="w-1/2" />
         <div className="w-full flex flex-col mt-5">
           {mensagens!.map((mensagem) => {
