@@ -1,15 +1,8 @@
 import { PaperPlaneRight } from "phosphor-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { api } from "../lib/axios";
-
-interface Mensagem {
-  createdAt: Date;
-  id: string;
-  message: string;
-  nameUser: string;
-  room_id: number;
-}
+import { getMessages } from "../controller/HandleMessagesController";
+import { Message } from "../model/Message";
 
 interface ChatProps {
   username: string;
@@ -19,7 +12,7 @@ interface ChatProps {
 export default function Chat() {
   const { state } = useLocation();
 
-  const [mensagens, setMensagens] = useState<Mensagem[]>([]);
+  const [mensagens, setMensagens] = useState<Message[]>([]);
   const [mensagemAtual, setMensagemAtual] = useState("");
   const [idCont, setIdCont] = useState(0);
 
@@ -48,27 +41,21 @@ export default function Chat() {
   // essa funcao vai ser usada mais tarde por criar as mensagens dentro do site
   function renderizarMensagens() {
     try {
-      api
-        .get("messages", {
-          params: {
-            roomId: 1,
-          },
-        })
-        .then((response) => {
-          const msgs: Mensagem[] = response.data;
+      const response = getMessages(1).then((response) => {
+        const msgs: Message[] = response.data;
 
-          msgs.sort((a, b) => {
-            if (a.createdAt < b.createdAt) {
-              return -1;
-            } else if (a.createdAt > b.createdAt) {
-              return 1;
-            } else {
-              return 0;
-            }
-          });
-
-          setMensagens(msgs);
+        msgs.sort((a, b) => {
+          if (a.createdAt < b.createdAt) {
+            return -1;
+          } else if (a.createdAt > b.createdAt) {
+            return 1;
+          } else {
+            return 0;
+          }
         });
+
+        setMensagens(msgs);
+      });
     } catch (error) {
       console.log(error);
     }
@@ -76,7 +63,7 @@ export default function Chat() {
   }
 
   function adicionarMensagem() {
-    const novaMensagem: Mensagem = {
+    const novaMensagem: Message = {
       createdAt: new Date(),
       message: mensagemAtual,
       nameUser: username,

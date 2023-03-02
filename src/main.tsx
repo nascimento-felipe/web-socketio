@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import Root from "./routes/root";
-import ErrorPage from "./error-page";
-import Chat from "./routes/chat";
+import Chat from "./view/chat";
+import ErrorPage from "./view/error-page";
+import Root from "./view/root";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
