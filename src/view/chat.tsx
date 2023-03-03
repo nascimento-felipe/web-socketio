@@ -1,13 +1,11 @@
 import { PaperPlaneRight } from "phosphor-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { getMessages } from "../controller/HandleMessagesController";
+import {
+  getMessages,
+  setMessages,
+} from "../controller/HandleMessagesController";
 import { Message } from "../model/Message";
-
-interface ChatProps {
-  username: string;
-  roomId: number;
-}
 
 export default function Chat() {
   const { state } = useLocation();
@@ -41,7 +39,7 @@ export default function Chat() {
   // essa funcao vai ser usada mais tarde por criar as mensagens dentro do site
   function renderizarMensagens() {
     try {
-      const response = getMessages(1).then((response) => {
+      getMessages(roomId).then((response) => {
         const msgs: Message[] = response.data;
 
         msgs.sort((a, b) => {
@@ -59,21 +57,10 @@ export default function Chat() {
     } catch (error) {
       console.log(error);
     }
-    return;
   }
 
-  function adicionarMensagem() {
-    const novaMensagem: Message = {
-      createdAt: new Date(),
-      message: mensagemAtual,
-      nameUser: username,
-      id: idCont.toString(),
-      room_id: 1,
-    };
-
-    setIdCont(idCont + 1);
-
-    setMensagens([...mensagens, novaMensagem]);
+  async function adicionarMensagem() {
+    await setMessages(mensagemAtual, username, roomId);
     setMensagemAtual("");
   }
 
@@ -89,7 +76,7 @@ export default function Chat() {
         <hr className="w-1/2" />
         <div className="w-full flex flex-col mt-5">
           {mensagens!.map((mensagem) => {
-            if (mensagem.nameUser === "Felipe") {
+            if (mensagem.nameUser === username) {
               return (
                 <div
                   className="w-fit px-5 mb-2 flex flex-col justify-end rounded-lg bg-zinc-700 self-end mr-2"
@@ -125,18 +112,20 @@ export default function Chat() {
           placeholder="insira sua mensagem..."
           onChange={(event) => setMensagemAtual(event.target.value)}
           value={mensagemAtual}
-          onKeyDown={(key) => {
+          onKeyDown={async (key) => {
             if (key.code === "Enter") {
-              adicionarMensagem();
+              await adicionarMensagem();
+              renderizarMensagens();
             }
           }}
         />
         <button
           className="p-1 mt-2 hover:bg-zinc-800 hover:rounded-lg transition-all"
           onClick={adicionarMensagem}
-          onKeyDown={(key) => {
+          onKeyDown={async (key) => {
             if (key.code === "Enter") {
-              adicionarMensagem();
+              await adicionarMensagem();
+              renderizarMensagens();
             }
           }}
         >
